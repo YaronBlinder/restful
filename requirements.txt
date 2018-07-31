@@ -1,5 +1,5 @@
 flask
-PIL
+Pillow
 tensorflow==1.9.0
 keras==2.2.0
 dicom
