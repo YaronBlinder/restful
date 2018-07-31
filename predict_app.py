@@ -8,6 +8,11 @@ import base64
 import tensorflow as tf
 from flask_login import login_required, current_user
 from flask_cors import CORS
+import logging
+
+handler = logging.FileHandler('flask_log.log')  # errors logged to this file
+handler.setLevel(logging.ERROR)  # only log errors and above
+app.logger.addHandler(handler)  # attach the handler to the app's logger
 
 # Define global parameters
 model = None
@@ -70,4 +75,4 @@ if __name__ == "__main__":
     print(("* Loading Keras model and Flask starting server..."
         "please wait until server has fully started"))
     load_model()
-    app.run()
+    app.run(debug=True)
