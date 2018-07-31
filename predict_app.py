@@ -10,10 +10,6 @@ from flask_login import login_required, current_user
 from flask_cors import CORS
 import logging
 
-handler = logging.FileHandler('flask_log.log')  # errors logged to this file
-handler.setLevel(logging.ERROR)  # only log errors and above
-app.logger.addHandler(handler)  # attach the handler to the app's logger
-
 # Define global parameters
 model = None
 PA_model = ['densenet121', 'linear']
