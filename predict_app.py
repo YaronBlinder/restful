@@ -25,6 +25,9 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 # initialize our Flask application and the Keras model
 app = flask.Flask(__name__)
 CORS(app)
+handler = logging.FileHandler('flask_log.log')  # errors logged to this file
+handler.setLevel(logging.ERROR)  # only log errors and above
+app.logger.addHandler(handler)  # attach the handler to the app's logger
 
 def load_model():
     # load the pre-trained Keras model (here we are using a model
