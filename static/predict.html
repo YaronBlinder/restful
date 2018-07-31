@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Radical AI CXR demo</title>
+    <style>
+        * {
+            font-size:30px
+        }
+    </style>
+</head>
+<body>
+    <input id="image-selector" type="file">
+    <button id="predict-button">Predict</button>
+    <p style="font-weight:bold">Predictions</p>
+    <p>Probability of abnormality: <span id="abnormality"></span></p>
+    <img id="selected-image" src=""/>
+
+    <script src="https://code.jquery.com//jquery-3.3.1.min.js"></script>
+    <script>
+        let base64Image;
+        $("#image-selector").change(function() {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let dataURL = reader.result;
+                $('#selected-image').attr("src", dataURL);
+                base64Image = dataURL.replace("data:image/png;base64,","");
+                console.log('image loaded')
+
+            }
+            reader.readAsDataURL($("#image-selector")[0].files[0]);
+            $("abnormality").text("");
+        });
+
+        $("#predict-button").click(function(event){
+            let message = {
+                image:base64Image
+            }
+            console.log(message);
+            $.post("http://127.0.0.1:5000/predict", JSON.stringify(message), function(response){
+                $("#abnormality").text(response.prediction.abnormality.toFixed(6));
+                console.log(response);
+            });
+        });
+    </script>
+</body>
+</html>
