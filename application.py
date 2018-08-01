@@ -47,6 +47,9 @@ def preprocess(im, flip=False, new_size=224):
     return im
 
 
+app.add_url_rule('/', 'index', (lambda: 'Hello'))
+
+
 @app.route("/predict", methods=["POST"])
 def predict():
     message = flask.request.get_json(force=True)
