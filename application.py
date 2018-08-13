@@ -1,13 +1,16 @@
-import numpy as np
-import clfs
-from im_utils import normalize, get_box, square, resize, gray2rgb
 from PIL import Image
+
+import requests
+import base64
+import clfs
 import flask
 import io
-import base64
+import numpy as np
 import tensorflow as tf
 # from flask_login import login_required, current_user
 from flask_cors import CORS
+from im_utils import normalize, get_box, square, resize, gray2rgb
+
 # import logging
 
 # Define global parameters
@@ -67,6 +70,29 @@ def predict():
     }
 
     return flask.jsonify(response)
+
+
+@app.route("/predict_from_url", methods=["POST"])
+def predict_from_url():
+    message = flask.request.get_json(force=True)
+    url = message['url']
+    response = requests.get(url)
+    image = Image.open(io.BytesIO(response.content))
+    image = np.array(image)
+    processed_image = preprocess(image)
+
+    global graph
+    with graph.as_default():
+        prediction = model.predict(np.expand_dims(processed_image, axis=0)).tolist()
+
+    response = {
+        'prediction': {
+            "abnormality": prediction[0][1]
+        }
+    }
+
+    return flask.jsonify(response)
+
 
 # if this is the main thread of execution first load the model and
 # then start the server
