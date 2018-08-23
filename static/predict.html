@@ -4,15 +4,16 @@
     <title>Radical AI CXR demo</title>
     <style>
         * {
-            font-size:30px
+            font-size:20px
         }
     </style>
 </head>
 <body>
     <input id="image-selector" type="file">
     <button id="predict-button">Predict</button>
-    <p style="font-weight:bold">Predictions</p>
-    <p>Probability of abnormality: <span id="abnormality"></span></p>
+    <p style="font-weight:bold"><span id="message0">Prediction</span></p>
+    <p><span id="message1">Probability of abnormality: </span><span id="abnormality"></span></p>
+    <p><span id="message2">Uses left in trial: </span><span id="uses"> </span></p>
     <img id="selected-image" src=""/>
 
     <script src="https://code.jquery.com//jquery-3.3.1.min.js"></script>
@@ -36,9 +37,21 @@
                 image:base64Image
             }
             console.log(message);
-            $.post("http://127.0.0.1:5000/predict", JSON.stringify(message), function(response){
-                $("#abnormality").text(response.prediction.abnormality.toFixed(6));
-                console.log(response);
+            $("#abnormality").text("Calculating, may take a few seconds...")
+            $.post("http://ec2-18-220-235-92.us-east-2.compute.amazonaws.com:5000/predict", JSON.stringify(message), function(response){
+                if (response.uses > -1) {
+                    $("#abnormality").text(response.prediction.abnormality.toFixed(6));
+                    $("#uses").text(response.uses);
+                    console.log(response);
+                    }
+                else {
+                    $("#message0").text(' ');
+                    $("#message1").text('Trial expired, please contact info@radical-ai.com');
+                    $("#abnormality").text(' ');
+                    $("#message2").text(' ');
+                    $("#uses").text(' ');
+                    console.log(response);
+                    }
             });
         });
     </script>

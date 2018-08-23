@@ -18,6 +18,7 @@ model = None
 PA_model = ['densenet121', 'linear']
 PA_weights_path = 'weights/PA.hdf5'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+uses = 3
 
 
 
@@ -52,24 +53,35 @@ app.add_url_rule('/', 'index', (lambda: 'Hello'))
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    message = flask.request.get_json(force=True)
-    encoded = message['image']
-    decoded = base64.b64decode(encoded)
-    image = Image.open(io.BytesIO(decoded))
-    image = np.array(image)
-    processed_image = preprocess(image)
+    global uses
+    uses -= 1
+    if uses >= 0:
+        message = flask.request.get_json(force=True)
+        encoded = message['image']
+        decoded = base64.b64decode(encoded)
+        image = Image.open(io.BytesIO(decoded))
+        image = np.array(image)
+        processed_image = preprocess(image)
 
-    global graph
-    with graph.as_default():
-        prediction = model.predict(np.expand_dims(processed_image, axis=0)).tolist()
+        global graph
+        with graph.as_default():
+            prediction = model.predict(np.expand_dims(processed_image, axis=0)).tolist()
 
-    response = {
-        'prediction': {
-            "abnormality": prediction[0][1]
+        response = {
+            'prediction': {
+                "abnormality": prediction[0][1]
+            },
+            'uses' : uses
         }
-    }
-
+    else:
+        response = {
+            'prediction': {
+                "abnormality": -1
+            },
+            'uses': uses
+        }
     return flask.jsonify(response)
+
 
 
 @app.route("/predict_from_url", methods=["POST"])
