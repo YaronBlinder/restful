@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Radical AI CXR demo</title>
+    <style>
+        * {
+            font-size:20px
+        }
+    </style>
+</head>
+<body>
+    <div style="background-color:darkgrey">
+        <H1>Radical AI demo</H1>
+        <u>Instructions:</u>
+        <p>1. Select chest x-ray image file by clicking "Choose File" (<b>.png</b> or <b>.jpg</b> only)</p>
+        <p>2. Get prediction of anomaly by clicking "Predict"</p>
+    </div>
+
+    <div align="center">
+    <input id="image-selector" type="file">
+    <button id="predict-button">Predict</button>
+    <p><span id="message1">Probability of abnormality: </span><span id="abnormality"></span></p>
+    <p><span id="message2">Uses left in trial: </span><span id="uses"> </span></p>
+    <img id="selected-image" src=""/>
+    </div>
+
+    <script src="https://code.jquery.com//jquery-3.3.1.min.js"></script>
+    <script>
+        let base64Image;
+        $("#image-selector").change(function() {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let dataURL = reader.result;
+                $('#selected-image').attr("src", dataURL);
+                base64Image = dataURL.replace("data:image/png;base64,","");
+                console.log('image loaded')
+
+            }
+            reader.readAsDataURL($("#image-selector")[0].files[0]);
+            $("abnormality").text("");
+        });
+
+        $("#predict-button").click(function(event){
+            let message = {
+                image:base64Image
+            }
+            console.log(message);
+            $("#abnormality").text("Calculating, may take a few seconds...")
+            $.post("http://ec2-18-220-235-92.us-east-2.compute.amazonaws.com:5000/predict", JSON.stringify(message), function(response){
+                if (response.uses > -1) {
+                    $("#abnormality").text(response.prediction.abnormality.toFixed(6));
+                    $("#uses").text(response.uses);
+                    console.log(response);
+                    }
+                else {
+                    $("#message1").text('Trial expired, please contact info@radical-ai.com');
+                    $("#abnormality").text(' ');
+                    $("#message2").text(' ');
+                    $("#uses").text(' ');
+                    console.log(response);
+                    }
+            });
+        });
+    </script>
+</body>
+</html>

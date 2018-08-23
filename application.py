@@ -48,7 +48,11 @@ def preprocess(im, flip=False, new_size=224):
     return im
 
 
-app.add_url_rule('/', 'index', (lambda: 'Hello'))
+# app.add_url_rule('/', 'index', (lambda: 'Hello'))
+
+@app.route("/")
+def index():
+    return flask.render_template('predict.html')
 
 
 @app.route("/predict", methods=["POST"])
