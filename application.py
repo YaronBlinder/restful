@@ -18,7 +18,7 @@ model = None
 PA_model = ['densenet121', 'linear']
 PA_weights_path = 'weights/PA.hdf5'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
-uses = 100  
+uses = 100
 
 
 

@@ -9,12 +9,20 @@
     </style>
 </head>
 <body>
+    <div style="background-color:darkgrey">
+        <H1>Radical AI demo</H1>
+        <u>Instructions:</u>
+        <p>1. Select chest x-ray image file by clicking "Choose File" (<b>.png</b> or <b>.jpg</b> only)</p>
+        <p>2. Get prediction of anomaly by clicking "Predict"</p>
+    </div>
+
+    <div align="center">
     <input id="image-selector" type="file">
     <button id="predict-button">Predict</button>
-    <p style="font-weight:bold"><span id="message0">Prediction</span></p>
     <p><span id="message1">Probability of abnormality: </span><span id="abnormality"></span></p>
     <p><span id="message2">Uses left in trial: </span><span id="uses"> </span></p>
     <img id="selected-image" src=""/>
+    </div>
 
     <script src="https://code.jquery.com//jquery-3.3.1.min.js"></script>
     <script>
@@ -45,7 +53,6 @@
                     console.log(response);
                     }
                 else {
-                    $("#message0").text(' ');
                     $("#message1").text('Trial expired, please contact info@radical-ai.com');
                     $("#abnormality").text(' ');
                     $("#message2").text(' ');
