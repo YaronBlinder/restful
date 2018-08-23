@@ -3,20 +3,29 @@
 <head>
     <title>Radical AI CXR demo</title>
     <style>
-        * {
-            font-size:20px
+        .top
+        {
+            font-size:20px;
+            font-family:Arial, Helvetica, sans-serif;
+            background-color:darkgrey;
+        }
+        .bottom
+        {
+            font-size:12px;
+            font-family:Arial, Helvetica, sans-serif;
+            background-color:white;
         }
     </style>
 </head>
 <body>
-    <div style="background-color:darkgrey">
-        <H1>Radical AI demo</H1>
+    <div class="top">
+        <h3>Radical AI demo</h3>
         <u>Instructions:</u>
         <p>1. Select chest x-ray image file by clicking "Choose File" (<b>.png</b> or <b>.jpg</b> only)</p>
         <p>2. Get prediction of anomaly by clicking "Predict"</p>
     </div>
 
-    <div align="center">
+    <div class="bottom" align="center">
     <input id="image-selector" type="file">
     <button id="predict-button">Predict</button>
     <p><span id="message1">Probability of abnormality: </span><span id="abnormality"></span></p>
